@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
 
+import botRoutes from './routes/bot';
+
 config();
 
 const app = express();
@@ -18,7 +20,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(morgan('combined', { stream: accessLogStream }));
 } else app.use(morgan('dev'));
 
-app.get('/', (_, res) => res.json({ msg: 'Hello World!' }));
-app.post('/', (req, res) => res.json({ body: req.body }));
+app.use('/bot', botRoutes);
 
 app.listen(port, () => console.log(`Server is runing on port ${port}...`));
