@@ -28,6 +28,7 @@
             "error",
             4
         ],
+        "array-callback-return": "off",
         "import/extensions": "off"
     },
     "settings": {
