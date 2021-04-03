@@ -24,12 +24,12 @@ const getTweetSentiment = (tweet: string) => {
     const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
     const preprocessedTweet = preprocessTweet(tweet);
     const analysis = analyzer.getSentiment(preprocessedTweet);
-    let result = '';
 
-    if (analysis < 0) result = `negative 😢 ${analysis} ${tweet}`;
-    if (analysis === 0) result = `neutral 😐 ${analysis} ${tweet}`;
-    if (analysis > 0) result = `positive 😃 ${analysis} ${tweet}`;
-    return result;
+    if (analysis < 0) console.log(`negative 😢 ${analysis} => ${tweet}`);
+    if (analysis === 0) console.log(`neutral 😐 ${analysis} => ${tweet}`);
+    if (analysis > 0) console.log(`positive 😃 ${analysis} => ${tweet}`);
+
+    return analysis;
 };
 
 const getTweets = (params: {}): Promise<string[]> => new Promise((resolve, reject) => {
@@ -43,12 +43,21 @@ const getTweets = (params: {}): Promise<string[]> => new Promise((resolve, rejec
     });
 });
 
-export const search = async (q: string) => {
-    const params = { q, count: 10, include_entities: true };
+export const search = async (q: string, count: number) => {
+    const params = { q, count, include_entities: true };
     const tweets = await getTweets(params);
-    const data = tweets.map((tweet) => {
-        console.log(getTweetSentiment(tweet));
-        return getTweetSentiment(tweet);
+
+    let positve = 0;
+    let negative = 0;
+    let neutral = 0;
+
+    tweets.map((tweet) => {
+        const analysis = getTweetSentiment(tweet);
+
+        if (analysis < 0) negative += 1;
+        if (analysis === 0) neutral += 1;
+        if (analysis > 0) positve += 1;
     });
-    return data;
+
+    return { neutral, negative, positve };
 };
